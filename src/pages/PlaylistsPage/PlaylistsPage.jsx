@@ -23,6 +23,8 @@ export default function PlaylistsPage() {
 
   // state for playlists data
   const [playlists, setPlaylists] = useState([]);
+  // total number of playlists available on the account (from API)
+  const [totalPlaylists, setTotalPlaylists] = useState(0);
 
   // state for loading and error
   const [loading, setLoading] = useState(true);
@@ -46,15 +48,35 @@ export default function PlaylistsPage() {
           }
         }
         setPlaylists(res.data.items);
+        // store total number of playlists if available
+        if (res.data && typeof res.data.total === 'number') {
+          setTotalPlaylists(res.data.total);
+        } else {
+          setTotalPlaylists(res.data.items.length);
+        }
       })
       .catch(err => { setError(err.message); })
       .finally(() => { setLoading(false); });
   }, [token, navigate]);
 
+
   return (
     <section className="playlists-container page-container" aria-labelledby="playlists-title">
       <h1 id="playlists-title" className="playlists-title page-title">Your Playlists</h1>
-      <h2 className="playlists-count">{limit} Playlists</h2>
+      <h2 className="playlists-count">
+        {!loading && playlists.length === 0 ? (
+          'No playlists'
+        ) : (
+          (() => {
+            const total = totalPlaylists || playlists.length;
+            const end = Math.min(limit, total);
+            if (total > limit) {
+              return `Showing 1 to ${end} of ${total} playlists`;
+            }
+            return `Showing 1 to ${end} playlists`;
+          })()
+        )}
+      </h2>
       {loading && <output className="playlists-loading" data-testid="loading-indicator">Loading playlists…</output>}
       {error && !loading && <div className="playlists-error" role="alert">{error}</div>}
       {!loading && !error && (
