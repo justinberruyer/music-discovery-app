@@ -4,8 +4,7 @@ import { buildTitle } from '../../constants/appMeta.js';
 import { fetchUserTopArtists } from '../../api/spotify-me.js';
 import { useRequireToken } from '../../hooks/useRequireToken.js';
 import { fetchUserTopTracks } from '../../api/spotify-me.js';
-import TopArtistItem from '../../components/TopArtistItem/TopArtistItem.jsx';
-import TrackItem from '../../components/TrackItem/TrackItem.jsx';
+import SimpleCard from '../../components/SimpleCard/SimpleCard.jsx';
 import { handleTokenError } from '../../utils/handleTokenError.js';
 import './DashboardPage.css';
 import '../PageLayout.css';
@@ -27,6 +26,7 @@ export default function DashboardPage() {
     setArtistError(null);
     fetchUserTopArtists(token)
       .then((result) => {
+        console.log('fetchUserTopArtists result:', result);
         if (handleTokenError(result?.error, navigate)) return;
         if (result?.error) {
           setArtistError(result.error);
@@ -48,6 +48,7 @@ export default function DashboardPage() {
     setTrackError(null);
     fetchUserTopTracks(token)
       .then((result) => {
+        console.log('fetchUserTopTracks result:', result);
         if (handleTokenError(result?.error, navigate)) return;
         if (result?.error) {
           setTrackError(result.error);
@@ -74,7 +75,7 @@ export default function DashboardPage() {
 
   return (
     <section className="dashboard-page page-container">
-      <h1>Dashboard</h1>
+  <h1 className="dashboard-subtitle">Dashboard</h1>
       <p className="dashboard-note">Your top artist and track</p>
 
       {/* Loading indicators (tests assert presence by data-testid) */}
@@ -85,32 +86,46 @@ export default function DashboardPage() {
         <p data-testid="loading-artists-indicator">Loading artists...</p>
       )}
 
-      {/* After loading finished, render errors or items */}
-      {!checking && !loadingArtists && (
-        <div>
-          {artistError ? (
-            <p data-testid="error-artists-indicator">{artistError}</p>
-          ) : (
-            firstArtist && (
-              <ol className="dashboard-top-artists">
-                <TopArtistItem artist={firstArtist} index={0} />
-              </ol>
-            )
-          )}
-        </div>
-      )}
+      {/* After loading finished, render artist and track side-by-side */}
+      {!checking && !loadingArtists && !loadingTracks && (
+        <div className="dashboard-content">
+          <div className="card">
+            {artistError ? (
+              <p data-testid="error-artists-indicator">{artistError}</p>
+            ) : (
+              firstArtist ? (
+                <SimpleCard
+                  imageUrl={firstArtist.images?.[1]?.url || firstArtist.images?.[0]?.url}
+                  title={firstArtist.name}
+                  subtitle={
+                    firstArtist.genres && firstArtist.genres.length > 0
+                      ? firstArtist.genres.join(', ')
+                      : 'No genre listed'
+                  }
+                  link={firstArtist.external_urls?.spotify}
+                />
+              ) : (
+                <p>No top artist available.</p>
+              )
+            )}
+          </div>
 
-      {!checking && !loadingTracks && (
-        <div>
-          {trackError ? (
-            <p data-testid="error-tracks-indicator">{trackError}</p>
-          ) : (
-            firstTrack && (
-              <ul className="dashboard-top-tracks">
-                <TrackItem track={firstTrack} />
-              </ul>
-            )
-          )}
+          <div className="card">
+            {trackError ? (
+              <p data-testid="error-tracks-indicator">{trackError}</p>
+            ) : (
+              firstTrack ? (
+                <SimpleCard
+                  imageUrl={firstTrack.album?.images?.[0]?.url}
+                  title={firstTrack.name}
+                  subtitle={firstTrack.artists?.map(a => a.name).join(', ')}
+                  link={firstTrack.external_urls?.spotify}
+                />
+              ) : (
+                <p>No top track available.</p>
+              )
+            )}
+          </div>
         </div>
       )}
     </section>
