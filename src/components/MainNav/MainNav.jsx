@@ -4,7 +4,7 @@ import { fetchAccountProfile } from '../../api/spotify-me.js';
 import AccountNav from '../AccountNav/AccountNav.jsx';
 import './MainNav.css';
 import { KEY_ACCESS_TOKEN } from '../../constants/storageKeys.js';
-import DashboardPage from '../../pages/DashboardPage/DashboardPage.jsx';
+
 
 // Generic nav item wrapper to reduce duplication and centralize active class logic
 function NavItem({ to, children }) {
