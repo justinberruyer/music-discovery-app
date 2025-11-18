@@ -4,6 +4,7 @@ import { fetchAccountProfile } from '../../api/spotify-me.js';
 import AccountNav from '../AccountNav/AccountNav.jsx';
 import './MainNav.css';
 import { KEY_ACCESS_TOKEN } from '../../constants/storageKeys.js';
+import DashboardPage from '../../pages/DashboardPage/DashboardPage.jsx';
 
 // Generic nav item wrapper to reduce duplication and centralize active class logic
 function NavItem({ to, children }) {
@@ -22,6 +23,7 @@ function NavItem({ to, children }) {
 const TopTracksLink = () => <NavItem to="/top-tracks">Top Tracks</NavItem>;
 const TopArtistsLink = () => <NavItem to="/top-artists">Top Artists</NavItem>;
 const PlaylistsLink = () => <NavItem to="/playlists">Playlists</NavItem>;
+const DashboardLink = () => <NavItem to="/dashboard">Dashboard</NavItem>;
 
 /**
  * Main navigation component that includes links to top tracks, top artists, playlists,
@@ -76,6 +78,7 @@ export default function MainNav() {
   return (
     <div className="main-nav-wrapper">
       <nav className="layout-nav main-nav-flex">
+        <DashboardLink />
         <TopTracksLink />
         <TopArtistsLink />
         <PlaylistsLink />
