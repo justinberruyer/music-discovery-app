@@ -13,6 +13,13 @@ export default function DashboardPage() {
   const { token, checking } = useRequireToken();
   const navigate = useNavigate();
 
+  const [firstArtist, setFirstArtist] = useState(null);
+  const [firstTrack, setFirstTrack] = useState(null);
+  const [loadingArtists, setLoadingArtists] = useState(true);
+  const [loadingTracks, setLoadingTracks] = useState(true);
+  const [artistError, setArtistError] = useState(null);
+  const [trackError, setTrackError] = useState(null);
+
   useEffect(() => {
     document.title = buildTitle('Dashboard');
   }, []);
@@ -66,12 +73,7 @@ export default function DashboardPage() {
       .finally(() => setLoadingTracks(false));
   }, [token, checking, navigate]);
 
-  const [firstArtist, setFirstArtist] = useState(null);
-  const [firstTrack, setFirstTrack] = useState(null);
-  const [loadingArtists, setLoadingArtists] = useState(true);
-  const [loadingTracks, setLoadingTracks] = useState(true);
-  const [artistError, setArtistError] = useState(null);
-  const [trackError, setTrackError] = useState(null);
+  
 
   return (
     <section className="dashboard-page page-container">
