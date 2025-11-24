@@ -4,6 +4,7 @@ import { KEY_ACCESS_TOKEN } from '../../constants/storageKeys.js';
 import { fetchPlaylistById } from '../../api/spotify-playlists.js';
 import { handleTokenError } from '../../utils/handleTokenError.js';
 import TrackItem from '../../components/TrackItem/TrackItem.jsx';
+import '../../styles/PlaylistDetailPage.css';
 
 export default function PlaylistPage() {
   const { id } = useParams();
