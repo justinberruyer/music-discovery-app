@@ -62,4 +62,21 @@ describe("artistCountForPlaylist", () => {
 
     consoleSpy.mockRestore();
   });
+
+  test("returns undefined and logs error when fetchPlaylistById returns an error payload", async () => {
+    fetchPlaylistById.mockResolvedValue({ error: 'unauthorized' });
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const result = await artistCountForPlaylist('t', 'p');
+    expect(result).toBeUndefined();
+    expect(consoleSpy).toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
+  });
+
+  test("returns empty object when fetchPlaylistById returns no data", async () => {
+    fetchPlaylistById.mockResolvedValue({ data: null });
+    const result = await artistCountForPlaylist('t', 'p');
+    expect(result).toEqual({});
+  });
 });
